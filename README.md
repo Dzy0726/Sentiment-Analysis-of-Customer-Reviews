@@ -4,7 +4,7 @@
 
 该项目为同济大学软件学院2021年专业方向综合项目，通过收集京东顾客的评论，进行情感分析生成顾客评论情感分析平台。本平台通过自然语言处理技术，对某一产品的评论进行情感分析，分析角度包括用户评论的角度、用户评论的态度、产品的质量、以及评论的质量。根据用户评论的褒贬和评论角度，生成自动回复内容，给商家回复进行参考。通过分析每个产品的大量评论数据，综合得出某项产品的各项指标，从而分析出该产品的特性。
 
-项目组成员如下：
+### 1.1 项目组成员
 
 | 姓名   | 文档分工                          |
 | ------ | --------------------------------- |
@@ -15,6 +15,108 @@
 | 刘腾飞 | 为什么使用这个网络                |
 | 梁荣嘉 | 前端技术说明                      |
 | 李添一 | 自动打标签算法                    |
+
+### 1.2 技术栈和工具
+
+1. Node.js
+2. React
+3. Electron
+4. Inno Setup Compiler
+
+### 1.3 开发环境配置
+
+1. 安装 node.js。
+2. clone 已有代码。原仓库地址： https://github.com/icedancemelody/NLPSentimentAnalysis.git 。
+3. 安装依赖。项目目录下执行 `npm install` 命令。
+
+### 1.4 调试运行方法
+
+要启动两个终端，一个运行前端代码，一个运行 Electron。
+
+1. 运行前端：
+   - 执行 `npm run react-start` （要关掉弹出的网页，网页版是不可用的）
+2. 运行 Electron：
+   - 确保 `main.js` 中 `const devMode = ture`
+   - 在另一个终端执行 `npm run electron-start`，若成功则可看到应用已经启动
+
+### 1.5 打包方法
+
+不使用 electron-forge，使用 Inno Setup Compiler。
+
+> Inno Setup Compiler 下载地址：https://files.jrsoftware.org/is/6/innosetup-6.1.2.exe 。使用浏览器访问该地址将直接下载。使用教程搜一搜就好了，简单的配置。
+
+1. 确保 `main.js` 中 `const devMode = false`
+2. 执行 `npm run build` ：构建 react 网页版
+3. 执行 `npm run package` ：打包为绿色版程序，程序文件夹在 `./out`
+4. 删除打包出来的程序文件夹中的 `resources/app/node_modules` 文件夹，以减小安装包体积
+5. 使用 Inno Setup Compiler 打包
+
+### 1.6 面向 Python 程序的接口
+
+Python 程序放在 py 目录下，通过同目录下的 json 文件与前端传输数据。
+
+- 前端向 Python 传：`py/dataToPy.json`
+- Python 向前端传：`py/dataToNodeJs.json`
+
+注意写入和读取使用 UTF-8 编码。
+
+前端向 Python 传两种数据结构，一种对应单条分析，一种对应批量分析。数据结构如下：
+
+1. 单条分析：
+
+```json
+{
+    "comment": "评论内容"
+}
+```
+
+2. 批量分析：
+
+```json
+{
+    "data": [
+        "评论内容1",
+        "评论内容2",
+        "评论内容3",
+    ]
+}
+```
+
+Python 向前端传两种数据结构，一种对应单条分析，一种对应批量分析。数据结构如下：
+
+1. 单条分析：
+
+```json
+{
+    "theDimension": "评论角度",
+    "theAttitude": "评论态度",
+    "theTextFeatures": "文字特征",
+    "theReply": "自动回复"
+}
+```
+
+2. 多条分析：
+
+```json
+{
+    "data": [
+        {
+            "commentText": "评论内容",
+            "dimension": "评论角度",
+            "attitude": "正/负",
+            "textFeatures": "文字特征",
+            "reply": "自动回复"
+        },
+        {
+            "commentText": "评论内容",
+            "dimension": "评论角度",
+            "attitude": "正面/负面",
+            "textFeatures": "文字特征",
+            "reply": "自动回复"
+        }
+    ]
+}
+```
 
 
 
